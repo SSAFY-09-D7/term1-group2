@@ -17,10 +17,10 @@ public class BOJ13023 {
 		int N = sc.nextInt();
 		int M = sc.nextInt();
 
-		adjList = new ArrayList[N + 1];
+		adjList = new ArrayList[N];
 		v = new boolean[N + 1];
 
-		for (int i = 0; i <= N; i++) {
+		for (int i = 0; i < N; i++) {
 			adjList[i] = new ArrayList<>();
 		}
 
