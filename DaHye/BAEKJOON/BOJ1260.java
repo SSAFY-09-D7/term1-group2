@@ -18,7 +18,6 @@ public class BOJ1260 {
 	static StringTokenizer st;
 	static int N, M, V;
 	static ArrayList<Integer>[] A;
-	static List<Integer> answer;
 	static boolean visited[];
 	
 	public static void main(String[] args) throws Exception {
@@ -28,8 +27,6 @@ public class BOJ1260 {
 		V = Integer.parseInt(st.nextToken()); // 정점의 번호
 		A = new ArrayList[N + 1];
 
-		answer = new ArrayList<>();
-	
 		for(int i = 1; i <= N; i++) {
 			A[i] = new ArrayList<>();
 		}
