@@ -1,6 +1,5 @@
 package BAEKJOON;
 
-import java.awt.Checkbox;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -15,6 +14,7 @@ import java.util.StringTokenizer;
  * 
  * 0: 익지 않은 토마토, -1 토마토가 있지 않은 상태, 1: 익은 토마토
  */
+
 public class BOJ7569 {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
