@@ -28,10 +28,6 @@ public class BOJ19942 {
 			this.v = v;
 			this.c = c;
 		}
-		@Override
-		public String toString() {
-			return "food [p=" + p + ", f=" + f + ", s=" + s + ", c=" + c + "]";
-		}
 	}
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
@@ -78,16 +74,9 @@ public class BOJ19942 {
 	private static void func(int k) {
 		if(k == N) {
 			if(sumP >= mp && sumF >= mf && sumS >= ms && sumV >= mv) {
-				if(sumC == minCost) {
-					sb.setLength(0);
-					minCost = Math.min(sumC, minCost);
-					for (int i = 0; i < sel.length; i++) {
-						if(sel[i] == true) {
-							sb.append((i + 1) + " ");
-						}
-					} set.add(sb.toString());
-				} else if(sumC < minCost) {
-					set.clear();
+				if(sumC <= minCost) {
+					// sum이 minCost 보다 작아질 때마다 set을 초기화
+					if(sumC < minCost) set.clear();
 					sb.setLength(0);
 					minCost = Math.min(sumC, minCost);
 					for (int i = 0; i < sel.length; i++) {
@@ -101,19 +90,28 @@ public class BOJ19942 {
 		}
 		
 		sel[k] = true;
-		sumP += foods[k].p;
-		sumF += foods[k].f;
-		sumS += foods[k].s;
-		sumV += foods[k].v;
-		sumC += foods[k].c;
+		sumFood(foods[k]);
 		func(k + 1);
 		
 		sel[k] = false;
-		sumP -= foods[k].p;
-		sumF -= foods[k].f;
-		sumS -= foods[k].s;
-		sumV -= foods[k].v;
-		sumC -= foods[k].c;
+		subFood(foods[k]);
+
 		func(k + 1);
+	}
+	
+	private static void subFood(food foods) {
+		sumP -= foods.p;
+		sumF -= foods.f;
+		sumS -= foods.s;
+		sumV -= foods.v;
+		sumC -= foods.c;
+	}
+	
+	private static void sumFood(food foods) {
+		sumP += foods.p;
+		sumF += foods.f;
+		sumS += foods.s;
+		sumV += foods.v;
+		sumC += foods.c;
 	}
 }
