@@ -17,7 +17,10 @@ public class BOJ14891 {
 	static StringTokenizer st;
 	static int K, N, D; // K: 회전 횟수, N: 회전 톱니바퀴 번호, D: 방향
 	static Deque<Integer>[] wheel = new Deque[4];
-
+	static int result = 0;
+	static boolean flagR, flagL;
+	static int R, L;
+	
 	public static void main(String[] args) throws Exception {
 		// 톱니바퀴 정보 입력 받기
 		for (int i = 0; i < 4; i++) {
@@ -30,23 +33,33 @@ public class BOJ14891 {
 		}
 
 		K = Integer.parseInt(br.readLine()); // 회전 횟수 입력
-		for (int count = 0; count < K + 1; count++) {
+		for (int count = 0; count < K; count++) {
 			st = new StringTokenizer(br.readLine());
 			N = Integer.parseInt(st.nextToken()); // 톱니바퀴 변호
 			D = Integer.parseInt(st.nextToken()); // 방향 (1: 시계, -1: 반시계)
-
-			func(N, D);
+			flagR = false;
+			flagL = false;
+			R = (int) wheel[N - 1].toArray()[2];
+			L = (int) wheel[N - 1].toArray()[6];
 			
-			for(int i = 0; i < wheel.length ;i++) {
-				System.out.println(wheel[i]);
-			}
+			funcR(N, D);
+			if(2 <= N) funcL(N, D, L);
+			
 		}
+		
+		int tmp = 1;
+		for(int i = 0; i < 4; i++) {
+			result += (tmp  * wheel[i].pollFirst());
+			tmp *= 2;
+		}
+		
+
+		System.out.println(result);
 	}
 
-	private static void func(int n, int d) {
-		rotate(n, d);
+	private static void funcR(int n, int d) {
+		
 		int wheelR = (int) wheel[n - 1].toArray()[2];
-		int wheelL = (int) wheel[n - 1].toArray()[6];
 		
 		rotate(n, d);
 		
@@ -55,24 +68,34 @@ public class BOJ14891 {
 			int nextWheelL = (int) wheel[n].toArray()[6];
 			
 			// 다음 바퀴 돌려주기
-			if(wheelR != nextWheelL) {
-				func(n + 1, d * -1);
+			if(wheelR != nextWheelL && !flagR) {
+				if(i == wheel.length - 1) flagR = true;
+				funcR(n + 1, d * -1);
 			}
-			else break;
-		}
-		
-		// 현재 바퀴의 왼쪽과 왼쪽 바퀴의 오른쪽과 비교하면서 다르면 자기가 도는 방향과 반대로 돌려주기
-		if(n - 2 >= 0) {
-			for(int i = n - 2; i >= 0; i--) {
-				int nextWheelR = (int) wheel[n - 2].toArray()[2];
-				
-				if(wheelL != nextWheelR) {
-					func(n - 2, d * -1);
-				} else break;
+			else {
+				flagR = true;
+				return;
 			}
 		}
 	}
 	
+	private static void funcL(int n, int d, int l) {
+		if(n == 1) {
+			flagL = true;
+			return;
+		}
+		
+		int wheelL = l;
+		
+		int prevWheelR = (int) wheel[n - 2].toArray()[2];
+		if(wheelL != prevWheelR && !flagL) {
+			wheelL = (int) wheel[n - 2].toArray()[6];
+			rotate(n - 1, d*-1);
+			
+			funcL(n - 1, d * -1, wheelL);
+		}
+	}
+
 	// d - 1: 시계, -1: 반시계
 	private static void rotate(int n, int d) {
 		int tmp = 0;
