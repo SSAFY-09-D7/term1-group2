@@ -51,8 +51,8 @@ public class SWEA5656 {
 				}
 			}
 			
-			copyArr();
 			func(0);
+			
 			sb.append("#" + test_case + " " + minWall + "\n");
 		}
 		System.out.println(sb);
