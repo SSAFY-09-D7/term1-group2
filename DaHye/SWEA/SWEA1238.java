@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /*
@@ -18,18 +21,17 @@ import java.util.StringTokenizer;
  */
 public class SWEA1238 {
 	static BufferedReader br;
+	static StringBuilder sb = new StringBuilder();
 	static StringTokenizer st;
-	static int V, E;
+	static int V, E, level;
 	static ArrayList<Integer>[] adj;
 	static int[] dist;
 	static boolean[] v;
-	static HashSet<Integer> set;
-	static int count;
 	
 	public static void main(String[] args) throws Exception {
-		System.setIn(new FileInputStream("Input/SWEA1238.txt"));
+		System.setIn(new FileInputStream("DaHye/Input/SWEA1238.txt"));
 		br = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		for (int test_case = 1; test_case < 11; test_case++) {
 			st = new StringTokenizer(br.readLine());
 			// N: 받는 데이터의 길이
@@ -39,9 +41,8 @@ public class SWEA1238 {
 			
 			int arr[] = new int[N];
 			adj = new ArrayList[101];
+			dist = new int[101];
 			v = new boolean[101];
-			set = new HashSet<>();
-			count = 0;
 			for (int i = 0; i < adj.length; i++) {
 				adj[i] = new ArrayList<>();
 			}
@@ -57,26 +58,33 @@ public class SWEA1238 {
 				int b = arr[i * 2 + 1];
 				
 				adj[a].add(b);
-				adj[b].add(a);
 			}
 			
-			Queue<Integer> queue = new LinkedList<>();
+			Queue<int[]> queue = new LinkedList<>();
 			
-			for(int i = 0; i < adj[S].size(); i++) {
-				queue.add((Integer) adj[S].get(i));
-				v[(int) adj[S].get(i)] = true;
-			}
+			queue.add(new int[] {S, 0});
+			v[S] = true;
 			
 			while(!queue.isEmpty()) {
-				int node = queue.poll();
+				int[] nodeDis = queue.poll();
+				dist[nodeDis[0]] = nodeDis[1];
+				level = nodeDis[1];
 				
-				for(int i = 0; i < adj[node].size(); i++) {
-					queue.add((Integer) adj[node].get(i));
-					v[(int) adj[node].get(i)] = true;
-					count++;
+				for(int i = 0; i < adj[nodeDis[0]].size(); i++) {
+					if(!v[(int) adj[nodeDis[0]].get(i)]) {
+						queue.add(new int[] {(Integer) adj[nodeDis[0]].get(i), nodeDis[1] + 1});
+						v[(int) adj[nodeDis[0]].get(i)] = true;
+					}
 				}
 			}
-			System.out.println(">>" + count);
+			
+			int result = 0;
+			for (int i = 0; i < dist.length; i++) {
+				if(dist[i] == level) result = i;
+			}
+
+			sb.append("#" + test_case + " " + result + "\n");
 		}
+		System.out.println(sb);
 	}
 }
