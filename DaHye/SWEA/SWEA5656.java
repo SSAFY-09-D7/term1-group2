@@ -27,13 +27,14 @@ public class SWEA5656 {
 	static int dr[] = {1, -1, 0, 0};
 	static int dc[] = {0, 0, -1, 1};
 	static int minWall;
+	static boolean flag;
 	
 	public static void main(String[] args) throws Exception {
 		System.setIn(new FileInputStream("./Input/SWEA5656.txt"));
 		br = new BufferedReader(new InputStreamReader(System.in));
 		T = Integer.parseInt(br.readLine());
 		
-		for (int test_case = 1; test_case < 2; test_case++) {
+		for (int test_case = 1; test_case < T + 1; test_case++) {
 			st = new StringTokenizer(br.readLine());
 			N = Integer.parseInt(st.nextToken());
 			W = Integer.parseInt(st.nextToken());
@@ -49,22 +50,12 @@ public class SWEA5656 {
 					map[r][c] = Integer.parseInt(st.nextToken());
 				}
 			}
-
-			tmp = new int[][] {{1, 2, 2, 1, 2}, {1, 1, 1, 2, 1}, {2, 1, 3, 2, 1}, {1, 2, 3, 1, 1}}; 
-			for(int i = 0; i < tmp.length; i++) {
-				System.out.println(Arrays.toString(tmp[i]));
-			}
-			System.out.println("======");
-			fuk(0, 2);
 			
-			for(int i = 0; i < tmp.length; i++) {
-				System.out.println(Arrays.toString(tmp[i]));
-			}
-//			func(0);
-//			System.out.println(minWall);
-//			sb.append("#" + test_case + " " + minWall + "\n");
+			copyArr();
+			func(0);
+			sb.append("#" + test_case + " " + minWall + "\n");
 		}
-//		System.out.println(sb);
+		System.out.println(sb);
 	}
 
 	private static void func(int k) {
@@ -81,18 +72,11 @@ public class SWEA5656 {
 					}
 					if(flag == true) break;
 				}
-				
-//				System.out.println("------");
-				for (int tmp1 = 0; tmp1 < tmp.length; tmp1++) {
-					System.out.println(Arrays.toString(tmp[tmp1]));
-				}
-				System.out.println("------");
 			}
 			
 			int leftWall = countWall();
 			minWall = Math.min(leftWall, minWall);
 			
-//			System.out.println(Arrays.toString(sel));
 			return;
 		}
 		
@@ -106,6 +90,7 @@ public class SWEA5656 {
 		for(int c = 0; c < W; c++) {
 			for(int r = H - 1; r > 0; r--) {
 				if(tmp[r][c] == 0) {
+					flag = false;
 					wallDown(r, c);
 				}
 			}
@@ -113,14 +98,17 @@ public class SWEA5656 {
 	}
 
 	private static void wallDown(int i, int j) {
-		if(i == 0) return;
+		if(i == 0) {
+			return;
+		}
 		for(int r = i - 1; r >= 0; r--) {
 			if(tmp[r][j] != 0) {
 				tmp[i][j] = tmp[r][j];
 				tmp[r][j] = 0;
-				wallDown(r, j);
+				break;
 			}
 		}
+		wallDown(i - 1, j);
 	}
 	private static int countWall() {
 		int count = 0;
