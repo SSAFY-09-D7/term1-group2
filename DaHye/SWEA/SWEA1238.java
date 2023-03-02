@@ -72,7 +72,7 @@ public class SWEA1238 {
 				
 				for(int i = 0; i < adj[nodeDis[0]].size(); i++) {
 					if(!v[(int) adj[nodeDis[0]].get(i)]) {
-						queue.add(new int[] {(Integer) adj[nodeDis[0]].get(i), nodeDis[1] + 1});
+						queue.add(new int[] {adj[nodeDis[0]].get(i), nodeDis[1] + 1});
 						v[(int) adj[nodeDis[0]].get(i)] = true;
 					}
 				}
