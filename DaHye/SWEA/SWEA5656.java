@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class SWEA5656 {
@@ -30,7 +31,7 @@ public class SWEA5656 {
 	static boolean flag;
 	
 	public static void main(String[] args) throws Exception {
-		System.setIn(new FileInputStream("./Input/SWEA5656.txt"));
+//		System.setIn(new FileInputStream("./Input/SWEA5656.txt"));
 		br = new BufferedReader(new InputStreamReader(System.in));
 		T = Integer.parseInt(br.readLine());
 		
@@ -86,16 +87,32 @@ public class SWEA5656 {
 		}
 	}
 
+	// 스택써서 배열 재조정하기
+	static Stack<Integer> stack = new Stack<>();
 	private static void replaceWall() {
 		for(int c = 0; c < W; c++) {
-			for(int r = H - 1; r > 0; r--) {
-				if(tmp[r][c] == 0) {
-					flag = false;
-					wallDown(r, c);
-				}
+			for(int r = 0; r < H; r++) {
+				if(tmp[r][c] > 0) stack.push(tmp[r][c]);
+				tmp[r][c] = 0 ;
+			}
+			int r = H - 1;
+			while(!stack.isEmpty()) {
+				tmp[r][c] = stack.pop();
+				r--;
 			}
 		}
 	}
+	
+//	private static void replaceWall() {
+//		for(int c = 0; c < W; c++) {
+//			for(int r = H - 1; r > 0; r--) {
+//				if(tmp[r][c] == 0) {
+//					flag = false;
+//					wallDown(r, c);
+//				}
+//			}
+//		}
+//	}
 
 	private static void wallDown(int i, int j) {
 		if(i == 0) {
