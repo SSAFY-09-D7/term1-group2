@@ -1,17 +1,12 @@
 package BAEKJOON;
+
 /*
  * 뱀
- * 사과를 먹으면 뱀 길이가 늘어남
- * 벽 또는 자기자신의 몸과 부딪히면 게임 끝
- * - 몸길이를 늘려 머리를 다음칸에 이동
- * - 이동한 칸에 사과 O: 사과가 없어지고 꼬리가 움직이지 않음
- * - 이동한 칸에 사과 X: 몸 길이 줄이고 꼬리가 위치한 칸 비워주기
- * 
- * map: 1행 1열 기준
  */
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -21,103 +16,116 @@ public class BOJ3190 {
 	static class Point {
 		int r;
 		int c;
+
 		public Point(int r, int c) {
 			super();
 			this.r = r;
 			this.c = c;
 		}
-		@Override
-		public String toString() {
-			return "Point [r=" + r + ", c=" + c + "]";
-		}
 	}
+
 	static BufferedReader br;
 	static StringTokenizer st;
 	static int N, K, L, X, map[][];
 	static char C;
 	// 우, 하, 좌, 상
-	static int dr[] = {0, 1, 0, -1};
-	static int dc[] = {1, 0, -1, 0};
+	static int dr[] = { 0, 1, 0, -1 };
+	static int dc[] = { 1, 0, -1, 0 };
 	static int d = 0;
-	static int time;
+	static int time = 0;
 	static Deque<Point> snake = new LinkedList<>();
-	
+	static boolean flag;
+
+	static class Order {
+		int time;
+		char dir;
+
+		public Order(int time, char dir) {
+			super();
+			this.time = time;
+			this.dir = dir;
+		}
+	}
+
+	static ArrayList<Order> orders;
+
 	public static void main(String[] args) throws Exception {
-//		System.setIn(new FileInputStream("./Input/BOJ3190.txt"));
 		br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());	// 보드의 크기
-		K = Integer.parseInt(br.readLine());	// 사과의 개수
+		N = Integer.parseInt(br.readLine()); // 보드의 크기
+		K = Integer.parseInt(br.readLine()); // 사과의 개수
 		map = new int[N][N];
-		
+		orders = new ArrayList<>();
+
 		snake.add(new Point(0, 0));
 		
-		for(int i = 0; i < K; i++) {
+		for (int i = 0; i < K; i++) {
 			st = new StringTokenizer(br.readLine());
 			int r = Integer.parseInt(st.nextToken()) - 1;
 			int c = Integer.parseInt(st.nextToken()) - 1;
-			
+
 			map[r][c] = 1; // 사과가 있으면 1로 표시
 		}
-		
-		L = Integer.parseInt(br.readLine());	// 뱀의 변환 횟수
-		
-		L: for(int i = 0; i < L; i++) {
+
+		L = Integer.parseInt(br.readLine()); // 뱀의 변환 횟수
+
+		for (int i = 0; i < L; i++) {
 			st = new StringTokenizer(br.readLine());
-			
-			X = Integer.parseInt(st.nextToken());
-			C = st.nextToken().charAt(0);	// L: 왼쪽으로 90도 회전, R: 오른쪽 90도 회전
-			
-			for(int t = time; t < X; t++) {
-				Point head = snake.peekFirst();
-				map[head.r][head.c] = -1;
-				time++;
-				
-				int nextHeadR = head.r + dr[d];
-				int nextHeadC = head.c + dc[d];
-				
-				System.out.println("D" + C + d);
-				if(!check(nextHeadR, nextHeadC)) break L;
-				
-				if(map[nextHeadR][nextHeadC] == 1) {
-					for(int k = 0; k < snake.size(); k++) {
-						Point tmp = (Point) snake.toArray()[k];
-						map[tmp.r][tmp.c] = -1;
-					}
+			int t = Integer.parseInt(st.nextToken());
+			char c = st.nextToken().charAt(0);
 
-					map[nextHeadR][nextHeadC] = -1;
-					snake.addFirst(new Point(nextHeadR, nextHeadC));
-				}
-				
-				if(map[nextHeadR][nextHeadC] == 0) {
-					map[nextHeadR][nextHeadC] = -1;
-					Point tail = snake.pollLast();
-					map[tail.r][tail.c] = 0;
-					snake.addFirst(new Point(nextHeadR, nextHeadC));
+			orders.add(new Order(t, c));
+		}
+
+		while (true) {
+			Point head = snake.peekFirst();
+			map[head.r][head.c] = -1;
+			time++;
+
+			int nextHeadR = head.r + dr[d];
+			int nextHeadC = head.c + dc[d];
+
+			if (!check1(nextHeadR, nextHeadC)) break;
+			if (!check2(nextHeadR, nextHeadC)) break;
+			
+			if (map[nextHeadR][nextHeadC] == 1) {
+				for (int k = 0; k < snake.size(); k++) {
+					Point tmp = (Point) snake.toArray()[k];
+					map[tmp.r][tmp.c] = -1;
 				}
 
-				print(map);
-//				System.out.println(snake);
-//				System.out.println(snake.size());
-				System.out.println("=============" + time + C);
-//				System.out.println(">>>" + d);
+				map[nextHeadR][nextHeadC] = -1;
+				snake.addFirst(new Point(nextHeadR, nextHeadC));
 			}
 
-			if(C == 'D') d = (d + 1) % 4;
-			if(C == 'L') d = (d - 1) % 4;
-		}
-		
-		System.out.println(time);
+			if (map[nextHeadR][nextHeadC] == 0) {
+				map[nextHeadR][nextHeadC] = -1;
+				Point tail = snake.pollLast();
+				map[tail.r][tail.c] = 0;
+				snake.addFirst(new Point(nextHeadR, nextHeadC));
+			}
 
+			for (int i = 0; i < orders.size(); i++) {
+				if (orders.get(i).time == time) {
+					if (orders.get(i).dir == 'D') d = (d + 1) % 4;
+					if (orders.get(i).dir == 'L') d = (d - 1 + 4) % 4;
+				}
+			}
+		}
+
+		System.out.println(time);
 	}
 
-	private static boolean check(int r, int c) {
-		if(r < 0 || r >= N || c < 0 || c >= N) return false;
+	private static boolean check2(int r, int c) {
 		if(map[r][c] == -1) return false;
 		return true;
 	}
 
+	private static boolean check1(int r, int c) {
+		return r >= 0 && r < N && c >= 0 && c < N;
+	}
+
 	private static void print(int[][] map) {
-		for(int i = 0; i < map.length; i++) {
+		for (int i = 0; i < map.length; i++) {
 			System.out.println(Arrays.toString(map[i]));
 		}
 	}
