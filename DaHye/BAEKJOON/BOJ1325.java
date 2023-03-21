@@ -72,7 +72,6 @@ public class BOJ1325 {
 					queue.add(nextIdx);
 				}
 			}
-
 		}
 	}
 }
