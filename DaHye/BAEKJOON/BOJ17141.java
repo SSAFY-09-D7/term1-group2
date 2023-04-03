@@ -9,12 +9,12 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 /*
- * 연구소
+ * 연구소 2
  * 0: 빈 칸, 1: 벽, 2: 바이러스
  * 2차원 배열에서 조합을 구해야 된다면 배열의 위치를 Class로 나타낸 뒤 list 활용하기
  */
 
-public class BOJ14502 {
+public class BOJ17141 {
 	static class Point {
 		int r;
 		int c;
