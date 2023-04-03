@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 /*
- * 가장 긴 감소하는 수열
+ * 가장 긴 감소하는 부분 수열
  */
 public class BOJ11722 {
 	public static void main(String[] args) {
