@@ -1,5 +1,6 @@
 package BAEKJOON;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -17,61 +18,49 @@ public class BOJ1956 {
 		V = sc.nextInt();
 		E = sc.nextInt();
 		
-		arr = new int[V + 1][V + 1];
+		arr = new int[V][V];
 		sel = new int[2];
-		result = Integer.MAX_VALUE;
+		result = INF;
+		
+		// 배열 초기화
+		for (int[] node : arr) {
+			Arrays.fill(node, INF);
+		}
 		
 		for (int i = 0; i < E; i++) {
-			int r = sc.nextInt();
-			int c = sc.nextInt();
+			int r = sc.nextInt() - 1;
+			int c = sc.nextInt() - 1;
 			
 			arr[r][c] = sc.nextInt();
 		}
 		
-		for (int r = 1; r < arr.length; r++) {
-			for (int c = 1; c < arr[r].length; c++) {
-				if(r != c && arr[r][c] == 0) arr[r][c] = INF;
-			}
-		}
-		
-		for (int k = 1; k < V + 1; k++) { // 경유지
-			for (int j = 1; j < V + 1; j++) { // 출발지
+		// 사이클이 있어야 되므로 조건문 설정 잘 하기!
+		for (int k = 0; k < V; k++) { // 경유지
+			for (int j = 0; j < V; j++) { // 출발지
 				if(k == j) continue;
 				for (int i = 0; i < arr.length; i++) {
-					if(i == k || i == j) continue;
-					if(arr[i][k] + arr[k][j] < arr[i][j]) arr[i][j] = arr[i][k] + arr[k][j];
+					if(i == k) continue;
+					arr[i][j] = Math.min(arr[i][k] + arr[k][j], arr[i][j]);
 				}
 			}
 		}
+//		print(arr);
 		
-		comb(0, 0);
+		for(int i = 0; i < V; i++) {
+			result = Math.min(result, arr[i][i]);
+		}
 		
-		result = result == Integer.MAX_VALUE ? -1 : result;
+		result = result == INF ? -1 : result;
 		
+
 		System.out.println(result);
 	}
 
-	private static void comb(int k, int idx) {
-		if(k == 2) {
-			if(arr[sel[0]][sel[1]] != INF && arr[sel[1]][sel[0]] != INF) {
-				int tmp = arr[sel[0]][sel[1]] + arr[sel[1]][sel[0]];
-				
-				result = Math.min(tmp, result);
-			}
-			return;
-		}
-		 
-		for(int i = idx; i < V; i++) {
-			sel[k] = i + 1; 
-			comb(k + 1, i + 1);
-		}
-	}
-
 	private static void print(int[][] arr) {
-		for (int i = 1; i < arr.length; i++) {
-			for (int j = 1; j < arr.length; j++) {
+		for (int i = 0; i < arr.length; i++) {
+			for (int j = 0; j < arr.length; j++) {
 				if(arr[i][j] == INF) System.out.print(0 + " ");
-				else System.out.print(arr[i][j] + "  ");
+				else System.out.print(arr[i][j] + " ");
 			} System.out.println();
  		}
 	}
