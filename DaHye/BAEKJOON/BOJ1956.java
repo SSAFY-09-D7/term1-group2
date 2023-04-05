@@ -46,6 +46,7 @@ public class BOJ1956 {
 		}
 //		print(arr);
 		
+		// arr[i][i]: 출발점과 도착점이 같을 경우
 		for(int i = 0; i < V; i++) {
 			result = Math.min(result, arr[i][i]);
 		}
