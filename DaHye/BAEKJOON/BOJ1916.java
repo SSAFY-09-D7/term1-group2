@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*;
 
 public class BOJ1916 {
-	static class Node {
+	static class Node implements Comparable<Node>{
 		int e, c;
 
 		public Node(int e, int c) {
@@ -19,6 +19,11 @@ public class BOJ1916 {
 		@Override
 		public String toString() {
 			return "Node [e=" + e + ", c=" + c + "]";
+		}
+
+		@Override
+		public int compareTo(Node o) {
+			return Integer.compare(this.c, o.c);
 		}
 	}
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -50,7 +55,6 @@ public class BOJ1916 {
 		end = Integer.parseInt(st.nextToken());
 		
 		int distance[] = new int[N + 1];
-		boolean v[] = new boolean[N + 1];
 		
 		Arrays.fill(distance, Integer.MAX_VALUE);
 		
@@ -59,25 +63,21 @@ public class BOJ1916 {
 		// 처음 시작할 때 출발지: 0
 		distance[start] = 0;
 		
-		for (int c = 1; c < N + 1; c++) {
-			current = -1;
-			min = Integer.MAX_VALUE;
-			
-			for(int i = 1; i < v.length; i++) {
-				if(!v[i] && min > distance[i]) {
-					min = distance[i];
-					current = i;
-				}
-			}
+		PriorityQueue<Node> queue = new PriorityQueue<>();
+		
+		queue.add(new Node(start, 0));
+		
+		while(!queue.isEmpty()) {
+			Node p = queue.poll();
+			current = p.e;
 			
 			if(current == -1) break;
 			if(current == end) break;
 			
-			v[current] = true; // 경유지로 설정!
-			
 			for (Node next : adj[current]) {				
-				if(!v[next.e] && distance[next.e] > distance[current] + next.c) {
+				if(distance[next.e] > distance[current] + next.c) {
 					distance[next.e] = distance[current] + next.c;
+					queue.add(new Node(next.e, distance[next.e]));
 				}
 			}
 		}
