@@ -4,12 +4,13 @@ import java.io.*;
 import java.util.*;
 
 /*
- * 봄버맨
+ * 봄버맨 2
  * O: 79, .: 46
  */
 
 public class BOJ16918 {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringBuilder sb = new StringBuilder();
 	static StringTokenizer st;
 	static int R, C, N;
 	static int map[][];
@@ -44,11 +45,19 @@ public class BOJ16918 {
 			}
 		}
 		
+		if(N > 2) {
+			if (N % 2 == 0) N = 2;
+			else if (N % 4 == 3) N = 3;
+			else if (N % 4 == 1) N = 5;
+		} 
+		
 		while(count++ < N - 1) {
 			func();
 		}
 	
 		print(map);
+		
+		System.out.println(sb);
 	}
 	
 	private static void bumb() {
@@ -100,9 +109,9 @@ public class BOJ16918 {
 	private static void print(int[][] map) {
 		for (int r = 0; r < map.length; r++) {
 			for (int c = 0; c < map[r].length; c++) {
-				if(map[r][c] == 46) System.out.print((char) 46);
-				else System.out.print((char) 79);
-			}System.out.println();
+				if(map[r][c] == 46) sb.append((char) 46);
+				else sb.append((char) 79);
+			} sb.append("\n");
 		}
 	}
 }
