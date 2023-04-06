@@ -27,9 +27,8 @@ public class BOJ1916 {
 	static ArrayList<Node>[] adj;
 	
 	public static void main(String[] args) throws Exception {
-		st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(br.readLine());
-		M = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(br.readLine());
 		
 		adj = new ArrayList[N + 1];
 		
@@ -49,10 +48,6 @@ public class BOJ1916 {
 		st = new StringTokenizer(br.readLine());
 		start = Integer.parseInt(st.nextToken());
 		end = Integer.parseInt(st.nextToken());
-		
-		for (int i = 0; i < adj.length; i++) {
-			System.out.println(adj[i]);
-		}
 		
 		int distance[] = new int[N + 1];
 		boolean v[] = new boolean[N + 1];
@@ -87,7 +82,6 @@ public class BOJ1916 {
 			}
 		}
 		
-		System.out.println(Arrays.toString(distance));
 		System.out.println(distance[end]);
 	}
 }
