@@ -11,6 +11,7 @@ public class BOJ14500 {
 	static StringTokenizer st;
 	static int N, M, map[][];
 	static int result;
+	static boolean v[][];
 	
 	public static void main(String[] args) throws Exception {
 		st = new StringTokenizer(br.readLine());
@@ -28,34 +29,40 @@ public class BOJ14500 {
 		
 		for(int r = 0; r < N; r++) {
 			for (int c = 0; c < M; c++) {
-				System.out.println("-----" + "r: "+ r + " c: " + c + "-----");
+				v = new boolean[N][M];
+				
+				v[r][c] = true;
 				dfs(0, r, c, map[r][c]);
-				dfs2(0, r, c, map[r][c]);
+				v[r][c] = false;
 			}
 		}
-
+		System.out.println(result);
 	}
 	
-	// ㅗ, ㅜ, ㅓ, ㅏ 모양 처리하기
-	private static void dfs2(int i, int r, int c, int j) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	static int dr[] = {1, 0, 0};
-	static int dc[] = {0, -1, 1};
+	static int dr[] = {1, -1, 0, 0};
+	static int dc[] = {0, 0, -1, 1};
 	private static void dfs(int k, int r, int c, int sum) {
 		if(k == 3) {
 			result = Math.max(result, sum);
 			return;
 		}
 		
-		for(int d = 0; d < 3; d++) {
+		
+		for(int d = 0; d < 4; d++) {
 			int nr = r + dr[d];
 			int nc = c + dc[d];
-			
+	
 			if(!check(nr, nc)) continue;
+			if(v[nr][nc]) continue;
+			
+			if(k == 1) {
+				v[nr][nc] = true;
+				dfs(k + 1, r, c, sum + map[nr][nc]);
+			}
+			
+			v[nr][nc] = true;
 			dfs(k + 1, nr, nc, sum + map[nr][nc]);
+			v[nr][nc] = false;
 		}
 	}
 	private static boolean check(int nr, int nc) {
