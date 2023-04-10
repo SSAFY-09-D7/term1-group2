@@ -11,26 +11,17 @@ public class BOJ16236 {
 	static StringTokenizer st;
 	static int N, map[][], count;
 	static fish shark;
-	static ArrayList<fish> fish;
 	static int dr[] = {1, -1, 0, 0};
 	static int dc[] = {0, 0, -1, 1};
 	
 	public static class fish implements Comparable<fish>{
 		int r, c, size, d, eat;
-		
-		public fish(int r, int c, int size) {
+		public fish(int r, int c, int size, int d) {
 			super();
 			this.r = r;
 			this.c = c;
 			this.size = size;
-		}
-		
-		public fish(int r, int c, int size, int eat) {
-			super();
-			this.r = r;
-			this.c = c;
-			this.size = size;
-			this.eat = eat;
+			this.d = d;
 		}
 
 		public void setD(int d) {
@@ -44,13 +35,10 @@ public class BOJ16236 {
 
 		@Override
 		public int compareTo(fish o) {
-			if(this.d == o.d) {
-				if(this.r == o.r) {
-					return Integer.compare(this.c, o.c);
-				}
-				return Integer.compare(this.r, o.r);
+			if(this.r == o.r) {
+				return Integer.compare(this.c, o.c);
 			}
-			return Integer.compare(this.d, o.d);
+			return Integer.compare(this.r, o.r);
 		}
 	}
 	
@@ -58,120 +46,84 @@ public class BOJ16236 {
 		N = Integer.parseInt(br.readLine());
 		
 		map = new int[N][N];
-		fish = new ArrayList<>();
 		
 		for (int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
 			for (int c = 0; c < N; c++) {
 				map[r][c] = Integer.parseInt(st.nextToken());
-				if(map[r][c] != 0 && map[r][c] != 9) fish.add(new fish(r, c, map[r][c]));
-				if(map[r][c] == 9) shark = new fish(r, c, 2, 0);
+				if(map[r][c] == 9) {
+					shark = new fish(r, c, 2, 0);
+					map[r][c] = 0;
+				}
 			}
 		}
 		
+		bfs();
 		
-		while(checkMap()) {
+		System.out.println(count);
+	}
 
-			getDistance();
+	private static void bfs() {
+		Queue<fish> queue = new LinkedList<>();
+		ArrayList<fish> list = new ArrayList<>();
+		
+		boolean v[][] = new boolean[N][N];
+		
+		// 상어의 위치를 queue에 담음
+		queue.add(new fish(shark.r, shark.c, shark.size, 0));
+		
+		while(!queue.isEmpty()) {
+			int size = queue.size();
 			
-			boolean flag = false;
-			
-			for(int i = 0; i < fish.size(); i++) {
-				if(fish.get(i).size < shark.size) {
-					if(fish.get(i).d != 987654321) flag = true;
+			for(int i = 0; i < size; i++) {
+				fish current = queue.poll();
+				
+				// 상어가 먹을 수 있는 물고기를 만났을 때
+				if(current.size < shark.size && current.size > 0) {
+					list.add(current);
+				}
+				
+				v[current.r][current.c] = true;
+				
+				for (int d = 0; d < 4; d++) {
+					int nr = current.r + dr[d];
+					int nc = current.c + dc[d];
+					
+					if(!check(nr, nc)) continue;
+					if(!v[nr][nc] && map[nr][nc] <= shark.size) {
+						v[nr][nc] = true;
+						queue.add(new fish(nr, nc, map[nr][nc], current.d + 1));
+					}
 				}
 			}
 			
-			if(!flag) break;
-			
-			Collections.sort(fish);
-//			for (int i = 0; i < fish.size(); i++) {
-//				System.out.println(fish.get(i));
-//			}
+			if(list.size() > 0) {
+				Collections.sort(list);
+				
+				shark.eat++;
+				
+				shark.r = list.get(0).r;
+				shark.c = list.get(0).c;
+				count += list.get(0).d;
+				
+				if(shark.eat == shark.size) {
+					shark.eat = 0;
+					shark.size++;
+				}
+				
+				list = new ArrayList<>();
+				v = new boolean[N][N];
 
-			eat();
-			
-//			print(map);
-			
-//			System.out.println(count + "===========");
+				queue = new LinkedList<>();
+				queue.add(new fish(shark.r, shark.c, shark.size, 0));
+				map[shark.r][shark.c] = 0;
+			}
 		}
-
-
-		System.out.println(count);
 	}
 
 	private static void print(int[][] map) {
 		for (int r = 0; r < map.length; r++) {
 			System.out.println(Arrays.toString(map[r]));
-		}
-	}
-
-	private static void eat() {
-		for(int i = 0; i < fish.size(); i++) {
-			if(fish.get(i).size < shark.size && fish.get(i).d != 987654321) {
-				shark.eat++;
-				if(shark.eat == shark.size) {
-					shark.size++;
-					shark.eat = 0;
-				}
-				
-				map[shark.r][shark.c] = 0;
-				
-				shark.r = fish.get(i).r;
-				shark.c = fish.get(i).c;
-				
-				map[fish.get(i).r][fish.get(i).c] = 9;
-				
-				count += fish.get(i).d;
-				
-				fish.remove(i);
-				
-				break;
-			}
-		}
-	}
-
-	private static boolean checkMap() {
-		for (int r = 0; r < map.length; r++) {
-			for (int c = 0; c < map.length; c++) {
-				if(map[r][c] != 9 && map[r][c] < shark.size && map[r][c] > 0) return true;
-			}
-		}
-		return false;
-	}
-
-	// 자신보다 작은 물고기를 먹으러 갈 때 거리를 구하는 함수
-	private static void getDistance() {
-		Queue<int []> queue= new LinkedList<>();
-		boolean v[][] = new boolean[N][N];
-		
-		queue.add(new int [] {shark.r, shark.c, 0});
-		
-		for (int i = 0; i < fish.size(); i++) {
-			fish.get(i).setD(987654321);
-		}
-
-		while(!queue.isEmpty()) {
-			int[] current = queue.poll();
-			
-			int r = current[0];
-			int c = current[1];
-			
-			for(int i = 0; i < fish.size(); i++) {
-				if(fish.get(i).r == r && fish.get(i).c == c) fish.get(i).setD(current[2]);
-			}
-			v[r][c] = true;
-			
-			for(int d = 0; d < 4; d++) {
-				int nr = r + dr[d];
-				int nc = c + dc[d];
-				
-				if(!check(nr, nc)) continue;
-				if(!v[nr][nc] && map[nr][nc] <= shark.size) {
-					 queue.add(new int[] {nr, nc, current[2] + 1});
-					 v[nr][nc] = true;
-				}
-			}
 		}
 	}
 
