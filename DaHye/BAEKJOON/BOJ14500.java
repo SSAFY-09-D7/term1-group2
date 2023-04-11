@@ -9,7 +9,7 @@ import java.util.*;
 public class BOJ14500 {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
-	static int N, M, map[][];
+	static int N, M, max, map[][];
 	static int result;
 	static boolean v[][];
 	
@@ -19,18 +19,17 @@ public class BOJ14500 {
 		M = Integer.parseInt(st.nextToken());
 		
 		map = new int[N][M];
-		
+		v = new boolean[N][M];
 		for (int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
 			for (int c = 0; c < M; c++) {
 				map[r][c] = Integer.parseInt(st.nextToken());
+				max = Math.max(max, map[r][c]);
 			}
 		}
 		
 		for(int r = 0; r < N; r++) {
 			for (int c = 0; c < M; c++) {
-				v = new boolean[N][M];
-				
 				v[r][c] = true;
 				dfs(0, r, c, map[r][c]);
 				v[r][c] = false;
@@ -38,16 +37,17 @@ public class BOJ14500 {
 		}
 		System.out.println(result);
 	}
-	
-	static int dr[] = {1, -1, 0, 0};
-	static int dc[] = {0, 0, -1, 1};
+
+	static int dr[] = {1, 0, 0};
+	static int dc[] = {0, -1, 1};
 	private static void dfs(int k, int r, int c, int sum) {
 		if(k == 3) {
 			result = Math.max(result, sum);
 			return;
 		}
 		
-		
+		if(sum + (3 - k) * max <= result) return;
+//		System.out.println(sum + (3 - k) * max + " " + result);
 		for(int d = 0; d < 4; d++) {
 			int nr = r + dr[d];
 			int nc = c + dc[d];
