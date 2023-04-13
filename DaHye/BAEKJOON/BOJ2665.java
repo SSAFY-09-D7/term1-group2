@@ -17,11 +17,6 @@ public class BOJ2665 {
 		}
 
 		@Override
-		public String toString() {
-			return "Node [e=" + e + ", c=" + c + "]";
-		}
-
-		@Override
 		public int compareTo(Node o) {
 			return Integer.compare(this.c, o.c);
 		}
@@ -37,9 +32,8 @@ public class BOJ2665 {
 		n = Integer.parseInt(br.readLine());
 		
 		map = new int[n][n];
-
 		adj = new ArrayList[n * n];
-		v = new boolean[n * n];
+
 		for (int i = 0; i < adj.length; i++) {
 			adj[i] = new ArrayList<>();
 		}
@@ -69,11 +63,10 @@ public class BOJ2665 {
 		Arrays.fill(d, Integer.MAX_VALUE);
 		
 		d[0] = 0;
-		v[0] = true;
-		
+
 		PriorityQueue<Node> queue = new PriorityQueue<>();
 		queue.add(new Node(0, 0));
-		v[0] = true;
+
 		while(!queue.isEmpty()) {
 			Node current = queue.poll();
 			
