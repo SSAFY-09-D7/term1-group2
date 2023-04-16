@@ -45,7 +45,9 @@ public class BOJ14938 {
 		
 		for (int k = 1; k < n + 1; k++) { // 경유지
 			for (int i = 1; i < n + 1; i++) { // 출발지
+				if(k == i) continue;
 				for (int j = 1; j < n + 1; j++) { // 도착지
+					if(j == k || j == i) continue;
 					arr[i][j] = Math.min(arr[i][j], arr[i][k] + arr[k][j]);
 				}
 			}
